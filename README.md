@@ -8,7 +8,7 @@ The resident clj/kotoba runtime that drives the **social-capital GROWTH score**
 ```
 
 minori is the *runtime* counterpart of ADR-2606261114's static MAP
-(`80-data/ie-flow/social-capital-valuation.edn`): the ADR measured where the value
+(provided through `MINORI_VALUATION_PATH`): the ADR measured where the value
 *could* come from; minori reacts, beat by beat, to **close the captured-vs-addressable
 gap and raise η from 0 (net taker) toward ≥1 (net giver)** — the phase transition that
 is the ADR's "本丸" — and persists an as-of growth history.
@@ -39,8 +39,9 @@ only the give-back levers (η + adoption) score. Growth is fruition (稔り), ne
 ## Run
 
 ```bash
-bb --classpath 20-actors/minori/src \
-   -e "(require 'minori.autorun) (minori.autorun/-main)"
+MINORI_VALUATION_PATH=/path/to/social-capital-valuation.edn \
+MINORI_SOS_PATH=/path/to/system-of-systems.edn \
+bb heartbeat
 ```
 
 Each invocation = one react beat appended to a content-addressed append-only ledger
@@ -51,7 +52,7 @@ one observe/measure/implement/social-action lever each fire.
 ## Layout
 
 ```
-20-actors/minori/
+com-etzhayyim-minori/
 ├── system.edn              # SoS membrane + 報酬系 (reward) spec + score model
 ├── src/minori/
 │   ├── score.cljc          # the growth-score model (η/adoption/capture/Φ, gated reward)
@@ -63,3 +64,7 @@ one observe/measure/implement/social-action lever each fire.
 ```
 
 ADR: `90-docs/adr/2606261114-…md` · `90-docs/adr/2606212200-actor-system-of-systems-reward.md`
+
+`system.edn` is the canonical structured configuration. Runtime datasets are
+explicitly injected through the environment variables recorded in
+`repository-contracts.edn`; the actor has no numbered-root path dependency.

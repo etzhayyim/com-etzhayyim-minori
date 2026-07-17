@@ -4,8 +4,7 @@
    Deterministic + resume-safe (beat index = ledger length; no wall-clock, no randomness):
    re-running with no new lever = idempotent no-op. Run under bb:
 
-     bb --classpath 20-actors/minori/src \\
-        -e \"(require 'minori.autorun) (minori.autorun/-main)\"
+     bb -m minori.autorun
 
    Live legs (real ie-flow scoreboard JOIN, real donation/OSS metrics, sending any social action)
    are G7/operator/member-gated — this loop only OBSERVES the MAP + SoS roster and PREPARES (dry-run)."
@@ -20,23 +19,26 @@
             [clojure.edn    :as edn]
             [clojure.java.io :as io]))
 
-(def defaults
-  {:system           "20-actors/minori/system.edn"
-   :valuation        "80-data/ie-flow/social-capital-valuation.edn"
-   :sos              "80-data/ie-flow/system-of-systems.edn"
-   :scoreboard       "80-data/ie-flow/scoreboard.edn"
-   :capture-snapshot "80-data/social-capital/capture-snapshot.edn"
-   :digest           "20-actors/minori/data/last-digest.md"
-   :ledger           "20-actors/minori/data/ledger.edn"})
+(def ^:private repository-root
+  (-> *file* io/file .getParentFile .getParentFile .getParentFile))
 
-(defn- unblob
-  "system.edn's non-scalar attrs (:system/boundary :system/reward :score/model) are
-   pr-str'd string blobs in the datomic/datascript tx-data shape; parse them back."
-  [v]
-  (if (string? v)
-    (try (let [parsed (edn/read-string v)] (if (coll? parsed) parsed v))
-         (catch #?(:clj Exception :cljs :default) _ v))
-    v))
+(defn- env [name]
+  #?(:clj (System/getenv name) :cljs nil))
+
+(def defaults
+  {:system           (str (io/file repository-root "system.edn"))
+   :valuation        (env "MINORI_VALUATION_PATH")
+   :sos              (env "MINORI_SOS_PATH")
+   :scoreboard       (env "MINORI_SCOREBOARD_PATH")
+   :capture-snapshot (env "MINORI_CAPTURE_SNAPSHOT_PATH")
+   :digest           (str (io/file repository-root "data" "last-digest.md"))
+   :ledger           (str (io/file repository-root "data" "ledger.edn"))})
+
+(defn- require-input [name path]
+  (when-not (seq path)
+    (throw (ex-info (str "missing injected runtime input: " name)
+                    {:input name :status :missing :source :environment-or-argument})))
+  path)
 
 (defn- reconstitute-system
   "system.edn is stored as datomic/datascript tx-data: [{:db/id -1 :actor/actor \"minori\" ...}].
@@ -46,7 +48,7 @@
   [tx-data]
   (into {}
         (map (fn [[k v]]
-               [(if (= (namespace k) "actor") (keyword (name k)) k) (unblob v)]))
+               [(if (= (namespace k) "actor") (keyword (name k)) k) v]))
         (dissoc (first tx-data) :db/id)))
 
 (defn next-worklist
@@ -77,6 +79,8 @@
   ([{:keys [system valuation sos scoreboard capture-snapshot digest ledger] :as paths}]
    (let [sys      (reconstitute-system (edn/read-string (slurp system)))
          model    (:score/model sys)
+         valuation (require-input :valuation valuation)
+         sos       (require-input :sos sos)
          _val     (score/read-edn valuation)            ; the MAP being tracked (presence = observed)
          adoption (score/roster-adoption sos (:adoption (:targets model)))
          led      (ledger/load-ledger ledger)

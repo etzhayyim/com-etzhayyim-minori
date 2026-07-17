@@ -1,0 +1,6 @@
+{:paths ["src" "test"]
+ :tasks
+ {test {:doc "Run the standalone actor test suite"
+        :task (shell "bb run_tests.clj")}
+  heartbeat {:doc "Run one resident heartbeat with injected data paths"
+             :task (apply shell "bb" "-m" "minori.autorun" *command-line-args*)}}}

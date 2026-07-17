@@ -34,7 +34,7 @@
       {:grounded? false :ratio 0.0
        :note (if snap
                "capture snapshot is a :template — operator must fill real figures + mark :live (G7)"
-               "no capture snapshot wired — provide 80-data/social-capital/capture-snapshot.edn (G7)")})))
+               "no capture snapshot wired — provide MINORI_CAPTURE_SNAPSHOT_PATH (G7)")})))
 
 (defn captured-ratio
   "Read the snapshot at `snapshot-path` and ground the capture ratio (read-only, fail-open)."

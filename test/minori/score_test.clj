@@ -1,7 +1,5 @@
 (ns minori.score-test
-  "minori charter + correctness tests — runnable under bb:
-     bb --classpath 20-actors/minori/src:20-actors/minori/test \\
-        -e \"(require 'minori.score-test) (minori.score-test/run)\""
+  "minori charter + correctness tests — runnable with `bb test`."
   (:require [minori.score   :as score]
             [minori.react   :as react]
             [minori.ledger  :as ledger]
@@ -68,7 +66,7 @@
       (check :ledger-tamper-detected (not (:ok (ledger/verify-chain [e0 (assoc e1 :a 99)])))))
 
     ;; MEASURE: grounding is monotone (never lowers η) + fail-open on absent scoreboard
-    (check :measure-failopen-absent (nil? (measure/colony-eta "20-actors/minori/data/__nope__.edn")))
+    (check :measure-failopen-absent (nil? (measure/colony-eta "data/__nope__.edn")))
     (check :measure-realized-phi (< (Math/abs (- (measure/realized-phi 105) (Math/log 105.0))) 1e-9))
     (let [grounded (measure/ground {:eta-grounded 0.10}
                                    {:colony-eta {:mean 0.95} :realized-phi 4.65})]
