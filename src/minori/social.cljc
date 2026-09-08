@@ -6,7 +6,7 @@
      - non-manipulative: no urgency/scarcity/attention-exploitation
    Those mechanisms are guarded — `clean?` refuses any body containing a forbidden phrase, and the
    artifact records :charter-clean so a member (and a test) can verify before any send."
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 (def forbidden
   "Manipulative CONSTRUCTIONS a charter-clean invitation may never use (urgency / scarcity /
@@ -20,13 +20,13 @@
 (defn clean?
   "True iff the text contains no forbidden (manipulative) construction."
   [text]
-  (let [t (str/lower-case (str text))]
+  (let [t (str/lower (str text))]
     (not-any? #(str/includes? t %) forbidden)))
 
 (defn anti-class?
   "True iff the text affirmatively states the anti-class invariant (giving earns nothing)."
   [text]
-  (let [t (str/lower-case (str text))]
+  (let [t (str/lower (str text))]
     (and (str/includes? t "earns you nothing")
          (str/includes? t "no perks, no tiers, no priority"))))
 
