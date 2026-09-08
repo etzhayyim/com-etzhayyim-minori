@@ -1,6 +1,6 @@
 (ns minori.score-test
   "minori charter + correctness tests — runnable with `bb test`."
-  (:require [minori.score   :as score]
+  (:require [kotoba.lang.text] [minori.score   :as score]
             [minori.react   :as react]
             [minori.ledger  :as ledger]
             [minori.measure :as measure]
@@ -95,7 +95,7 @@
                             :next-step "wire live donation metric" :next-gate :G7-operator})]
       (check :social-prepared-unsent (= :prepared-unsent (:status d)))
       (check :social-charter-clean (:charter-clean d))
-      (check :social-mentions-anti-class (clojure.string/includes? (:body d) "earns you nothing")))
+      (check :social-mentions-anti-class (kotoba.lang.text/includes? (:body d) "earns you nothing")))
     (check :social-detects-manipulation (not (social/clean? "Donate now — limited time, VIP perks!")))
     (check :social-no-server-key (get-in (social/digest {:eta 0.8 :adopted 1 :realized-phi 0.0
                                                          :next-step "x" :next-gate :none})
@@ -107,7 +107,7 @@
           ds   (kotoba/datoms-of beat)]
       (check :kotoba-eavt-shape (every? #(and (= :db/add (first %)) (= 4 (count %))) ds))
       (check :kotoba-values-not-keywordish
-             (not-any? #(clojure.string/starts-with? (str (nth % 3)) ":") ds))
+             (not-any? #(kotoba.lang.text/starts-with? (str (nth % 3)) ":") ds))
       (let [c1 (kotoba/commit ds nil)
             c2 (kotoba/commit ds nil)
             c3 (kotoba/commit (kotoba/datoms-of (assoc beat :G 0.66)) (:cid c1))]
