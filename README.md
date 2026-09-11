@@ -59,7 +59,7 @@ com-etzhayyim-minori/
 │   ├── react.cljc          # the beat: catalog → rank → apply (dry-run) → ΔG
 │   ├── ledger.cljc         # content-addressed append-only ledger (verify-chain)
 │   └── autorun.cljc        # heartbeat: one beat + persist + evaluate growth
-├── test/minori/score_test.clj
+├── test/minori/score_test.cljk
 └── data/                   # local runtime state (gitignored)
 ```
 
