@@ -5,7 +5,7 @@
   :repository/west-path "orgs/etzhayyim/com-etzhayyim-minori"
   :repository/legacy-path "20-actors/minori"
   :repository/runtime :babashka
-  :repository/test-command "bb test"
+  :repository/test-command "kbb -M:test"
   :repository/runtime-inputs
   {:valuation {:environment "MINORI_VALUATION_PATH" :format :edn}
    :system-of-systems {:environment "MINORI_SOS_PATH" :format :edn}
