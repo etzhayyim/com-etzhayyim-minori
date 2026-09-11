@@ -1,5 +1,5 @@
 (ns minori.score-test
-  "minori charter + correctness tests — runnable with `bb test`."
+  "minori charter + correctness tests — runnable with `kbb -M:test`."
   (:require [kotoba.lang.text] [minori.score   :as score]
             [minori.react   :as react]
             [minori.ledger  :as ledger]

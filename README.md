@@ -41,7 +41,7 @@ only the give-back levers (η + adoption) score. Growth is fruition (稔り), ne
 ```bash
 MINORI_VALUATION_PATH=/path/to/social-capital-valuation.edn \
 MINORI_SOS_PATH=/path/to/system-of-systems.edn \
-bb heartbeat
+kbb -M:heartbeat
 ```
 
 Each invocation = one react beat appended to a content-addressed append-only ledger

@@ -4,7 +4,7 @@
    Deterministic + resume-safe (beat index = ledger length; no wall-clock, no randomness):
    re-running with no new lever = idempotent no-op. Run under bb:
 
-     bb -m minori.autorun
+     kbb -m minori.autorun
 
    Live legs (real ie-flow scoreboard JOIN, real donation/OSS metrics, sending any social action)
    are G7/operator/member-gated — this loop only OBSERVES the MAP + SoS roster and PREPARES (dry-run)."
